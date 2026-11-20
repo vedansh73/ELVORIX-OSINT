@@ -1,0 +1,83 @@
+[
+  {
+    "name": "GitHub",
+    "url_template": "https://github.com/{target}",
+    "not_found_markers": ["not found"]
+  },
+  {
+    "name": "GitLab",
+    "url_template": "https://gitlab.com/{target}",
+    "not_found_markers": ["page not found", "sign in"],
+    "reject_redirect_contains": "users/sign_in"
+  },
+  {
+    "name": "Reddit",
+    "url_template": "https://www.reddit.com/user/{target}/",
+    "not_found_markers": ["sorry, nobody on reddit goes by that name"]
+  },
+  {
+    "name": "YouTube",
+    "url_template": "https://www.youtube.com/@{target}",
+    "not_found_markers": ["this page isn't available"]
+  },
+  {
+    "name": "Medium",
+    "url_template": "https://medium.com/@{target}",
+    "not_found_markers": ["page not found", "out of nothing"]
+  },
+  {
+    "name": "Dev.to",
+    "url_template": "https://dev.to/{target}",
+    "not_found_markers": ["this page does not exist"]
+  },
+  {
+    "name": "PyPI",
+    "url_template": "https://pypi.org/user/{target}/",
+    "not_found_markers": ["we looked everywhere"]
+  },
+  {
+    "name": "NPM",
+    "url_template": "https://www.npmjs.com/~{target}",
+    "not_found_markers": ["not found"]
+  },
+  {
+    "name": "DockerHub",
+    "url_template": "https://hub.docker.com/u/{target}",
+    "not_found_markers": ["page not found"]
+  },
+  {
+    "name": "Keybase",
+    "url_template": "https://keybase.io/{target}",
+    "not_found_markers": ["no such user"]
+  },
+  {
+    "name": "Replit",
+    "url_template": "https://replit.com/@{target}",
+    "not_found_markers": ["page not found"]
+  },
+  {
+    "name": "Kaggle",
+    "url_template": "https://www.kaggle.com/{target}",
+    "not_found_markers": ["page not found"]
+  },
+  {
+    "name": "CodePen",
+    "url_template": "https://codepen.io/{target}",
+    "not_found_markers": ["not found"]
+  },
+  {
+    "name": "TryHackMe",
+    "url_template": "https://tryhackme.com/p/{target}",
+    "not_found_markers": ["user not found"]
+  },
+  {
+    "name": "Linktree",
+    "url_template": "https://linktr.ee/{target}",
+    "not_found_markers": ["the page you're looking for doesn't exist"]
+  },
+  {
+    "name": "Scratch",
+    "url_template": "https://scratch.mit.edu/users/{target}/",
+    "not_found_markers": ["whoops! our server is scratch'ing its head"]
+  }
+]
