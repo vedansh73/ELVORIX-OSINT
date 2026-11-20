@@ -1,0 +1,32 @@
+[
+  {
+    "name": "robots.txt",
+    "url_template": "https://{target}/robots.txt",
+    "not_found_markers": ["page not found"]
+  },
+  {
+    "name": "sitemap.xml",
+    "url_template": "https://{target}/sitemap.xml",
+    "not_found_markers": ["page not found"]
+  },
+  {
+    "name": "security.txt",
+    "url_template": "https://{target}/.well-known/security.txt",
+    "not_found_markers": ["page not found"]
+  },
+  {
+    "name": "humans.txt",
+    "url_template": "https://{target}/humans.txt",
+    "not_found_markers": ["page not found"]
+  },
+  {
+    "name": "ads.txt",
+    "url_template": "https://{target}/ads.txt",
+    "not_found_markers": ["page not found"]
+  },
+  {
+    "name": "OpenAPI / Swagger JSON",
+    "url_template": "https://{target}/swagger.json",
+    "not_found_markers": ["page not found"]
+  }
+]
