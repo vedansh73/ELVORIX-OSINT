@@ -1036,6 +1036,16 @@ def codec_utility():
         console.print(f"[red][-] Codec error: {e}[/red]")
 
 
+
+def _run_dork(prompt_label: str, query_template: str):
+    target = _clean_domain(console.input(prompt_label))
+    if not target:
+        console.print("[red][-] Input cannot be empty.[/red]")
+        return
+    q = query_template.format(d=target)
+    console.print(f"https://www.google.com/search?q={quote(q)}")
+
+
 def _build_domain_60() -> list:
     def _fetch_html(d: str):
         return requests.get(f"https://{_clean_domain(d)}", headers={"User-Agent": USER_AGENT}, timeout=8)
@@ -1085,15 +1095,15 @@ def _build_domain_60() -> list:
         ("Intel: HackerTarget HTTP Headers", lambda: console.print(requests.get(f"https://api.hackertarget.com/httpheaders/?q={_clean_domain(console.input('Domain: '))}", timeout=8).text)),
         ("Intel: HackerTarget Page Links", lambda: console.print(requests.get(f"https://api.hackertarget.com/pagelinks/?q={_clean_domain(console.input('Domain: '))}", timeout=8).text)),
         ("Intel: URLScan.io Public Search API", lambda: console.print([x.get("page", {}).get("url") for x in requests.get(f"https://urlscan.io/api/v1/search/?q=domain:{_clean_domain(console.input('Domain: '))}", timeout=8).json().get("results", [])[:15]])),
-        ("Dork: Exposed Documents (PDF/XLSX/DOCX)", lambda: (lambda d: console.print(f"https://www.google.com/search?q={quote(f'site:{d} (filetype:pdf OR filetype:xlsx OR filetype:docx OR filetype:csv)')}"))(_clean_domain(console.input("Domain: ")))),
-        ("Dork: Exposed Config & Env Files", lambda: (lambda d: console.print("https://www.google.com/search?q=" + quote(f"site:{_clean_domain(console.input("Domain: "))} (ext:env OR ext:log OR ext:bak OR ext:sql OR ext:yml)")))(_clean_domain(console.input("Domain: ")))),
-        ("Dork: Open Directory Listings", lambda: (lambda d: console.print("https://www.google.com/search?q=" + quote(f"site:{_clean_domain(console.input("Domain: "))} intitle:"index of"")))(_clean_domain(console.input("Domain: ")))),
-        ("Dork: Login & Admin Portals", lambda: (lambda d: console.print("https://www.google.com/search?q=" + quote(f"site:{_clean_domain(console.input("Domain: "))} (inurl:login OR inurl:admin OR inurl:signin OR inurl:portal)")))(_clean_domain(console.input("Domain: ")))),
-        ("Dork: GitHub Code Mentions", lambda: (lambda d: console.print("https://www.google.com/search?q=" + quote(f"site:github.com "{_clean_domain(console.input("Domain: "))}"")))(_clean_domain(console.input("Domain: ")))),
-        ("Dork: Pastebin Mentions", lambda: (lambda d: console.print("https://www.google.com/search?q=" + quote(f"site:pastebin.com "{_clean_domain(console.input("Domain: "))}"")))(_clean_domain(console.input("Domain: ")))),
-        ("Dork: Subdomain Discovery Search", lambda: (lambda d: console.print("https://www.google.com/search?q=" + quote(f"site:*.{_clean_domain(console.input("Domain: "))} -www")))(_clean_domain(console.input("Domain: ")))),
-        ("Dork: Cloud S3 / Blob Buckets", lambda: (lambda d: console.print("https://www.google.com/search?q=" + quote(f"(site:s3.amazonaws.com OR site:blob.core.windows.net OR site:storage.googleapis.com) "{_clean_domain(console.input("Keyword/Domain: "))}"")))(_clean_domain(console.input("Domain: ")))),
-        ("Dork: Trello & Notion Public Boards", lambda: (lambda d: console.print("https://www.google.com/search?q=" + quote(f"(site:trello.com OR site:notion.site) "{_clean_domain(console.input("Keyword/Domain: "))}"")))(_clean_domain(console.input("Domain: ")))),
+        ("Dork: Exposed Documents (PDF/XLSX/DOCX)", lambda p="Domain: ", qt='site:{d} (filetype:pdf OR filetype:xlsx OR filetype:docx OR filetype:csv)': _run_dork(p, qt)),
+        ("Dork: Exposed Config & Env Files", lambda p="Domain: ", qt='site:{d} (ext:env OR ext:log OR ext:bak OR ext:sql OR ext:yml)': _run_dork(p, qt)),
+        ("Dork: Open Directory Listings", lambda p="Domain: ", qt='site:{d} intitle:"index of"': _run_dork(p, qt)),
+        ("Dork: Login & Admin Portals", lambda p="Domain: ", qt='site:{d} (inurl:login OR inurl:admin OR inurl:signin OR inurl:portal)': _run_dork(p, qt)),
+        ("Dork: GitHub Code Mentions", lambda p="Domain: ", qt='site:github.com "{d}"': _run_dork(p, qt)),
+        ("Dork: Pastebin Mentions", lambda p="Domain: ", qt='site:pastebin.com "{d}"': _run_dork(p, qt)),
+        ("Dork: Subdomain Discovery Search", lambda p="Domain: ", qt='site:*.{d} -www': _run_dork(p, qt)),
+        ("Dork: Cloud S3 / Blob Buckets", lambda p="Keyword/Domain: ", qt='(site:s3.amazonaws.com OR site:blob.core.windows.net OR site:storage.googleapis.com) "{d}"': _run_dork(p, qt)),
+        ("Dork: Trello & Notion Public Boards", lambda p="Keyword/Domain: ", qt='(site:trello.com OR site:notion.site) "{d}"': _run_dork(p, qt)),
         ("Dork: Censys Public Host Link", lambda: console.print(f"https://search.censys.io/search?resource=hosts&q={quote(_clean_domain(console.input('Domain or IP: ')))}")),
         ("Dork: VirusTotal Domain Report Link", lambda: console.print(f"https://www.virustotal.com/gui/domain/{_clean_domain(console.input('Domain: '))}")),
         ("Dork: SecurityTrails DNS History Link", lambda: console.print(f"https://securitytrails.com/domain/{_clean_domain(console.input('Domain: '))}/dns")),
