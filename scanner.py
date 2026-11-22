@@ -13,7 +13,7 @@ import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone as dt_timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from urllib.parse import urlparse, quote, unquote, urljoin
+from urllib.parse import urlparse, quote, unquote
 
 import phonenumbers
 from phonenumbers import geocoder, carrier, timezone, number_type, PhoneNumberType
@@ -386,7 +386,6 @@ def decode_jwt_unverified(token: str) -> dict:
         return {"error": f"Decode failed: {e}"}
 
 
-# -------------------- 200 UNIQUE PLATFORMS (SLOTS 001-200) --------------------
 PLATFORMS_200 = [
     ("GitHub", "https://github.com/{target}", ["not found"]),
     ("GitLab", "https://gitlab.com/{target}", ["page not found", "sign in"]),
@@ -489,7 +488,6 @@ PLATFORMS_200 = [
     ("ReverbNation", "https://www.reverbnation.com/{target}", ["page not found"]),
     ("Houzz", "https://www.houzz.com/user/{target}", ["page not found"]),
 ]
-# Expand cleanly to 200 distinct platform endpoints
 _EXTRA_PLATFORMS = [
     ("Airbnb", "https://www.airbnb.com/users/show/{target}"),
     ("TripAdvisor", "https://www.tripadvisor.com/Profile/{target}"),
@@ -595,8 +593,6 @@ _EXTRA_PLATFORMS = [
 for _n, _u in _EXTRA_PLATFORMS:
     PLATFORMS_200.append((_n, _u, ["not found", "page not found", "404"]))
 
-
-# -------------------- 120 UNIQUE WEB ENDPOINTS (SLOTS 201-320) --------------------
 WEB_ENDPOINTS_120 = [
     "robots.txt", "sitemap.xml", "sitemap_index.xml", ".well-known/security.txt",
     "security.txt", "humans.txt", "ads.txt", "app-ads.txt", "sellers.json",
@@ -699,7 +695,6 @@ def _check_single_port(port: int, svc: str):
         console.print(f"[red][-] Port scan error: {e}[/red]")
 
 
-# -------------------- MAIN MENU FUNCTIONS (1-15) --------------------
 def phone_osint():
     console.print("\n[bold yellow][1] Phone Number OSINT Intelligence[/bold yellow]")
     raw = console.input("Enter phone with country code (e.g., +919876543210): ").strip()
@@ -1041,11 +1036,9 @@ def codec_utility():
         console.print(f"[red][-] Codec error: {e}[/red]")
 
 
-# -------------------- 60 UNIQUE DOMAIN/WEB/DNS MODULES (SLOTS 321-380) --------------------
 def _build_domain_60() -> list:
     def _fetch_html(d: str):
-        r = requests.get(f"https://{_clean_domain(d)}", headers={"User-Agent": USER_AGENT}, timeout=8)
-        return r
+        return requests.get(f"https://{_clean_domain(d)}", headers={"User-Agent": USER_AGENT}, timeout=8)
 
     return [
         ("Domain: Full Deep Recon Report", domain_deep_osint),
@@ -1111,7 +1104,6 @@ def _build_domain_60() -> list:
     ]
 
 
-# -------------------- 60 UNIQUE IP / CIDR / PORT MODULES (SLOTS 381-440) --------------------
 PORTS_55 = [
     (20, "FTP-Data"), (21, "FTP"), (22, "SSH"), (23, "Telnet"), (25, "SMTP"),
     (43, "WHOIS"), (53, "DNS"), (67, "DHCP-Server"), (68, "DHCP-Client"), (69, "TFTP"),
@@ -1140,7 +1132,6 @@ def _build_ip_60() -> list:
     return items
 
 
-# -------------------- 60 UNIQUE YOUTUBE / PHONE / FORENSICS / CRYPTO MODULES (SLOTS 441-500) --------------------
 def _yt_video_deep():
     vid = console.input("Enter YouTube Video ID or URL: ").strip()
     m = re.search(r"(?:v=|youtu\.be/|shorts/)([\w-]{11})", vid)
@@ -1174,7 +1165,6 @@ def _yt_channel_id_rss():
 
 def _build_deep_60() -> list:
     return [
-        # YouTube Deep Modules (10)
         ("YouTube: Full Channel Metadata & RSS OSINT", youtube_channel_osint),
         ("YouTube: Video oEmbed & HD Thumbnails Extractor", _yt_video_deep),
         ("YouTube: Direct Channel ID (UC...) RSS Feed Reader", _yt_channel_id_rss),
@@ -1186,7 +1176,6 @@ def _build_deep_60() -> list:
         ("YouTube: Playlist RSS Feed Generator", lambda: console.print(f"https://www.youtube.com/feeds/videos.xml?playlist_id={console.input('Playlist ID (PL...): ').strip()}")),
         ("YouTube: External Social Links on Channel Page", lambda: (lambda h: console.print(sorted(set(re.findall(r'q=(https%3A%2F%2F[^&"]+)', requests.get(f"https://www.youtube.com/@{h}", headers={"User-Agent": USER_AGENT}, timeout=8).text)))))(console.input("Handle: ").strip().lstrip("@"))),
 
-        # Phone & Messaging Deep Modules (10)
         ("Phone: Full Telecom & Region Intelligence", phone_osint),
         ("Phone: WhatsApp Direct Link & Public Dorks", deep_whatsapp_osint),
         ("Phone: Telegram Public Link & Dork Builder", lambda: (lambda p: console.print({"t_me": f"https://t.me/{p}", "dork": f"https://www.google.com/search?q={quote(f'\"{p}\" site:t.me OR telegram')}"} ))(phonenumbers.format_number(phonenumbers.parse(console.input("Phone (+91...): ").strip(), None), phonenumbers.PhoneNumberFormat.E164))),
@@ -1198,7 +1187,6 @@ def _build_deep_60() -> list:
         ("Phone: Line Type Classifier (Mobile/VoIP/Fixed)", lambda: (lambda n: console.print({"line_type": get_number_type_label(n), "valid": phonenumbers.is_valid_number(n)}))(phonenumbers.parse(console.input("Phone (+91...): ").strip(), None))),
         ("Phone: Social & Classifieds Dork (OLX/Justdial)", lambda: (lambda p: console.print(f"https://www.google.com/search?q={quote(f'\"{p}\" (site:justdial.com OR site:indiamart.com OR site:olx.in)')}"))(re.sub(r"\D", "", console.input("Phone (+91...): ").strip()))),
 
-        # Local File & Image Forensics Modules (20)
         ("Forensics: Complete File & Image Deep Report", file_forensics),
         ("Forensics: Magic Bytes & True File Type Check", lambda: console.print({k: inspect_file_deep(console.input("File path: ").strip().strip('"')).get(k) for k in ("file", "size_bytes", "header_hex", "detected_magic_type")})),
         ("Forensics: File Shannon Entropy (Packed/Encrypted Check)", lambda: console.print(f"Shannon Entropy: {inspect_file_deep(console.input('File path: ').strip().strip('\"')).get('shannon_entropy')} / 8.0")),
@@ -1220,7 +1208,6 @@ def _build_deep_60() -> list:
         ("Forensics: Directory Recursive Extension Counter", lambda: (lambda d: (lambda exts: console.print({e: exts.count(e) for e in sorted(set(exts))}))([os.path.splitext(f)[1].lower() or "no_ext" for _, _, fs in os.walk(d) for f in fs]))(console.input("Directory path: ").strip().strip('"'))),
         ("Forensics: Reverse Image Search URL Helper", lambda: console.print({"Google Lens": "https://lens.google.com/", "TinEye": "https://tineye.com/", "Yandex Images": "https://yandex.com/images/"})),
 
-        # Crypto, Tokens, Email & Encoding Utilities (20)
         ("Crypto: JWT Header, Payload & UTC Expiry Decoder", jwt_decoder_tool),
         ("Crypto: Multi-Hash Generator (MD5/SHA1/256/512)", hash_tool),
         ("Crypto: SHA3-256 & BLAKE2b Hash Generator", lambda: (lambda b: console.print({"sha3_256": hashlib.sha3_256(b).hexdigest(), "blake2b": hashlib.blake2b(b).hexdigest()}))(console.input("Text: ").encode())),
@@ -1247,14 +1234,12 @@ def _build_deep_60() -> list:
 def _build_500_registry() -> dict:
     registry = {}
 
-    # 001 - 200: 200 Unique Platforms
     for idx, (name, tpl, markers) in enumerate(PLATFORMS_200[:200], 1):
         registry[f"{idx:03d}"] = (
             f"Platform OSINT: {name}",
             lambda n=name, t=tpl, m=markers: _check_single_platform(n, t, m),
         )
 
-    # 201 - 320: 120 Unique Web Endpoints
     for offset, ep in enumerate(WEB_ENDPOINTS_120[:120]):
         idx = 201 + offset
         registry[f"{idx:03d}"] = (
@@ -1262,17 +1247,14 @@ def _build_500_registry() -> dict:
             lambda path=ep: _check_single_endpoint(path),
         )
 
-    # 321 - 380: 60 Unique Domain / DNS / SSL / Intel / Dork Modules
     for offset, (label, fn) in enumerate(_build_domain_60()[:60]):
         idx = 321 + offset
         registry[f"{idx:03d}"] = (label, fn)
 
-    # 381 - 440: 60 Unique IP / CIDR / Port Modules
     for offset, (label, fn) in enumerate(_build_ip_60()[:60]):
         idx = 381 + offset
         registry[f"{idx:03d}"] = (label, fn)
 
-    # 441 - 500: 60 Unique YouTube / Phone / Forensics / Crypto Modules
     for offset, (label, fn) in enumerate(_build_deep_60()[:60]):
         idx = 441 + offset
         registry[f"{idx:03d}"] = (label, fn)
